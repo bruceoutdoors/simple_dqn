@@ -3,7 +3,6 @@ import logging
 logging.basicConfig(format='%(asctime)s %(message)s')
 
 from PLEEnvironment import PLEEnvironment
-from environment import ALEEnvironment, GymEnvironment
 from replay_memory import ReplayMemory
 from deepqnetwork import DeepQNetwork
 from agent import Agent
@@ -26,6 +25,7 @@ envarg.add_argument("--display_screen", type=str2bool, default=False,
                     help="Display game screen during training and testing.")
 # envarg.add_argument("--sound", type=str2bool, default=False, help="Play (or record) sound.")
 envarg.add_argument("--frame_skip", type=int, default=4, help="How many times to repeat each chosen action.")
+envarg.add_argument("--force_fps", type=bool, default=False)
 envarg.add_argument("--repeat_action_probability", type=float, default=0,
                     help="Probability, that chosen action will be repeated. Otherwise random action is chosen during repeating.")
 envarg.add_argument("--minimal_action_set", dest="minimal_action_set", type=str2bool, default=True,
@@ -86,7 +86,7 @@ nvisarg.add_argument("--visualization_filters", type=int, default=4,
 nvisarg.add_argument("--visualization_file", help="Write layer visualization to this file.")
 
 mainarg = parser.add_argument_group('Main loop')
-mainarg.add_argument("--random_steps", type=int, default=500,
+mainarg.add_argument("--random_steps", type=int, default=10000,
                      help="Populate replay memory with random steps before starting learning.")
 mainarg.add_argument("--train_steps", type=int, default=250000, help="How many training steps per epoch.")
 mainarg.add_argument("--test_steps", type=int, default=125000, help="How many testing steps after each epoch.")
@@ -111,9 +111,9 @@ logger.setLevel(args.log_level)
 if args.random_seed:
     random.seed(args.random_seed)
 
-from ple.games.pixelcopter import Pixelcopter
+import ple
 
-game = Pixelcopter()
+game = ple.games.snake.Snake()
 env = PLEEnvironment(game, args)
 
 mem = ReplayMemory(args.replay_size, args)

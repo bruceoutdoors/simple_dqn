@@ -12,12 +12,10 @@ class PLEEnvironment(Environment):
 
         from ple import PLE
 
-        self.ale = PLE(game, display_screen=False, frame_skip=4)
+        play_game = False
 
-        #if args.display_screen:
+        self.ale = PLE(game, display_screen=False, frame_skip=4, force_fps=not play_game, fps=30)
         self.ale.display_screen = True
-
-        self.ale.frame_skip = args.frame_skip
 
         self.actions = self.ale.getActionSet()
 
@@ -58,3 +56,7 @@ class PLEEnvironment(Environment):
         if self.mode == 'train':
             return self.ale.game_over() or self.life_lost
         return self.ale.game_over()
+
+    def setMode(self, mode):
+        # Set training/test mode. Not used in Gym environment
+        self.mode = mode
