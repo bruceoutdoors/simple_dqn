@@ -73,10 +73,9 @@ plt.figure(figsize = (args.figure_width, args.figure_height))
 for i, field in enumerate(args.fields):
   plt.subplot(rows, cols, i + 1)
 
-  plt.plot(data['epoch'][train_idx], list(data[field][random_idx]) * len(data['epoch'][train_idx]))
   plt.plot(data['epoch'][train_idx], data[field][train_idx])
   plt.plot(data['epoch'][test_idx], data[field][test_idx])
-  plt.legend(["Random", "Train", "Test"], loc = "best")
+  plt.legend(["Train", "Test"], loc = "best")
   plt.ylabel(labels[field])
   plt.xlabel(labels['epoch'])
   plt.title(labels[field])
