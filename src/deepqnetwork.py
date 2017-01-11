@@ -79,6 +79,13 @@ class DeepQNetwork:
     init_xavier_conv = Xavier(local=True)
     init_xavier_affine = Xavier(local=False)
     layers = []
+
+    # Bruce CNN
+    # layers.append(Conv((8, 8, 48), strides=2, init=init_xavier_conv, activation=Rectlin(), batch_norm=self.batch_norm))
+    # layers.append(Conv((5, 5, 64), strides=2, init=init_xavier_conv, activation=Rectlin(), batch_norm=self.batch_norm))
+    # layers.append(Conv((4, 4, 64), strides=2, init=init_xavier_conv, activation=Rectlin(), batch_norm=self.batch_norm))
+    # layers.append(Conv((2, 2, 64), strides=1, init=init_xavier_conv, activation=Rectlin(), batch_norm=self.batch_norm))
+
     # The first hidden layer convolves 32 filters of 8x8 with stride 4 with the input image and applies a rectifier nonlinearity.
     layers.append(Conv((8, 8, 32), strides=4, init=init_xavier_conv, activation=Rectlin(), batch_norm=self.batch_norm))
     # The second hidden layer convolves 64 filters of 4x4 with stride 2, again followed by a rectifier nonlinearity.
