@@ -155,19 +155,19 @@ class RemoteLearner(Resource):
             net = DeepQNetwork(input_num, args)
 
             if game_name == 'demon_attack':
-                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/demon_attack_20.pkl")
+                net.load_weights(os.path.expanduser('~') + "/Documents/simple_dqn/snapshots/demon_attack_20.pkl")
             elif game_name == 'kangaroo':
-                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/kangaroo_50.pkl")
+                net.load_weights(os.path.expanduser('~') + "/Documents/simple_dqn/snapshots/kangaroo_50.pkl")
             elif game_name == 'star_gunner':
-                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/star_gunner_82.pkl")
+                net.load_weights(os.path.expanduser('~') + "/Documents/simple_dqn/snapshots/star_gunner_82.pkl")
             elif game_name == 'space_invaders':
-                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/space_invaders_91.pkl")
+                net.load_weights(os.path.expanduser('~') + "/Documents/simple_dqn/snapshots/space_invaders_91.pkl")
             elif game_name == 'breakout':
-                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/breakout_200.pkl")
+                net.load_weights(os.path.expanduser('~') + "/Documents/simple_dqn/snapshots/breakout_200.pkl")
             elif game_name == 'catcher':
-                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/catcher_69.prm")
+                net.load_weights(os.path.expanduser('~') + "/Documents/simple_dqn/snapshots/catcher_69.prm")
             elif game_name == 'snake':
-                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/snake_59.pkl")
+                net.load_weights(os.path.expanduser('~') + "/Documents/simple_dqn/snapshots/snake_59.pkl")
 
             agent = StepAgent(input_num, mem, net, args)
 

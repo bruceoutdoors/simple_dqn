@@ -10,6 +10,7 @@ import argparse
 import requests
 import cv2
 import ple
+import os
 
 def str2bool(v):
     return v.lower() in ("yes", "true", "t", "1")
@@ -49,27 +50,27 @@ bunch_of_env = [
     {
         'env' : 'ale',
         'gameName' : 'kangaroo',
-        'rom' : "/home/danny/Documents/simple_dqn/roms/kangaroo.bin"
+        'rom' : os.path.expanduser('~') + "/Documents/simple_dqn/roms/kangaroo.bin"
     },
     {
         'env' : 'ale',
         'gameName' : 'space_invaders',
-        'rom' : "/home/danny/Documents/simple_dqn/roms/space_invaders.bin"
+        'rom' : os.path.expanduser('~') + "/Documents/simple_dqn/roms/space_invaders.bin"
     },
     {
         'env' : 'ale',
         'gameName' : 'demon_attack',
-        'rom' : "/home/danny/Documents/simple_dqn/roms/demon_attack.bin"
+        'rom' : os.path.expanduser('~') + "/Documents/simple_dqn/roms/demon_attack.bin"
     },
     {
         'env' : 'ale',
         'gameName' : 'star_gunner',
-        'rom' : "/home/danny/Documents/simple_dqn/roms/star_gunner.bin"
+        'rom' : os.path.expanduser('~') + "/Documents/simple_dqn/roms/star_gunner.bin"
     },
     {
         'env': 'ale',
         'gameName': 'breakout',
-        'rom': "/home/danny/Documents/simple_dqn/roms/breakout.bin"
+        'rom': os.path.expanduser('~') + "/Documents/simple_dqn/roms/breakout.bin"
     },
     {
         'env': 'ple',
