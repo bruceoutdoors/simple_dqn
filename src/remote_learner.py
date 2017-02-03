@@ -153,7 +153,22 @@ class RemoteLearner(Resource):
             current_state = LeanerState.PLAY
 
             net = DeepQNetwork(input_num, args)
-            net.load_weights("/home/bruceoutdoors/Documents/simple_dqn/snapshots/breakout_200.pkl")
+
+            if game_name == 'demon_attack':
+                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/demon_attack_20.pkl")
+            elif game_name == 'kangaroo':
+                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/kangaroo_50.pkl")
+            elif game_name == 'star_gunner':
+                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/star_gunner_82.pkl")
+            elif game_name == 'space_invaders':
+                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/space_invaders_91.pkl")
+            elif game_name == 'breakout':
+                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/breakout_200.pkl")
+            elif game_name == 'catcher':
+                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/catcher_69.prm")
+            elif game_name == 'snake':
+                net.load_weights("/home/danny/Documents/simple_dqn/snapshots/snake_59.pkl")
+
             agent = StepAgent(input_num, mem, net, args)
 
             print 'proceed to play!'
@@ -168,9 +183,10 @@ class RemoteLearner(Resource):
             screen.save('receivedscreen.jpg')
             screen = cv2.imread('receivedscreen.jpg', cv2.IMREAD_GRAYSCALE)
 
-            agent.step_play_receive(screen, reward, is_terminal)
-
-            if is_terminal == True:
+            try:
+                agent.step_play_receive(screen, reward, is_terminal)
+            except AttributeError:
+                print 'game oveeeeeer'
                 current_state = LeanerState.INIT
                 return {'reply': 'stopped'}
 
@@ -183,6 +199,6 @@ class RemoteLearner(Resource):
 
 api.add_resource(RemoteLearner, '/')
 
-app.run(host='127.0.0.1', port=5000, debug=True)
+app.run(host='0.0.0.0', port=5000)
 
 logger.info("All done")

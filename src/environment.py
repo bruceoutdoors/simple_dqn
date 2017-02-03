@@ -32,10 +32,22 @@ class Environment:
     # Set training/test mode. Not used in Gym environment
     self.mode = mode
 
+loadedALE = False
+one_ale = 0
+
 class ALEEnvironment(Environment):
   def __init__(self, rom_file, args):
-    from ale_python_interface import ALEInterface
-    self.ale = ALEInterface()
+    global loadedALE
+    global one_ale
+
+    if not loadedALE:
+      loadedALE = True
+      from ale_python_interface import ALEInterface
+      one_ale = ALEInterface()
+      self.ale = one_ale
+    else:
+      self.ale = one_ale
+
     if args.display_screen:
       if sys.platform == 'darwin':
         import pygame

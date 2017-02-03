@@ -3,10 +3,13 @@ import logging
 logging.basicConfig(format='%(asctime)s %(message)s')
 
 from environment import ALEEnvironment
+from PLEEnvironment import PLEEnvironment
+
 import random
 import argparse
 import requests
 import cv2
+import ple
 
 def str2bool(v):
     return v.lower() in ("yes", "true", "t", "1")
@@ -42,40 +45,97 @@ args = parser.parse_args()
 logger = logging.getLogger()
 logger.setLevel(args.log_level)
 
-env = ALEEnvironment("/home/bruceoutdoors/Documents/simple_dqn/roms/breakout.bin", args)
-env.setMode('test')
+bunch_of_env = [
+    {
+        'env' : 'ale',
+        'gameName' : 'kangaroo',
+        'rom' : "/home/danny/Documents/simple_dqn/roms/kangaroo.bin"
+    },
+    {
+        'env' : 'ale',
+        'gameName' : 'space_invaders',
+        'rom' : "/home/danny/Documents/simple_dqn/roms/space_invaders.bin"
+    },
+    {
+        'env' : 'ale',
+        'gameName' : 'demon_attack',
+        'rom' : "/home/danny/Documents/simple_dqn/roms/demon_attack.bin"
+    },
+    {
+        'env' : 'ale',
+        'gameName' : 'star_gunner',
+        'rom' : "/home/danny/Documents/simple_dqn/roms/star_gunner.bin"
+    },
+    {
+        'env': 'ale',
+        'gameName': 'breakout',
+        'rom': "/home/danny/Documents/simple_dqn/roms/breakout.bin"
+    },
+    {
+        'env': 'ple',
+        'gameName': 'catcher'
+    },
+    {
+        'env': 'ple',
+        'gameName': 'snake'
+    }
+]
 
-if args.random_seed:
-    random.seed(args.random_seed)
-
-payload = {
-    'inputCount' : env.numActions(),
-    'gameName' : 'space_invaders',
-}
-
-address = 'http://127.0.0.1:5000/'
-r = requests.post(address, data=payload)
-assert r.json()['reply'] == 'ok'
-
-reward = 0
+# if args.random_seed:
+#     random.seed(args.random_seed)
 
 while True:
-    cv2.imwrite("capture.jpg", env.getScreen())
-    files = {'screen': open("capture.jpg", 'rb')}
+    rand_game = bunch_of_env[random.randint(0, len(bunch_of_env) - 1)]
+
+    if rand_game['env'] == 'ale':
+        env = ALEEnvironment(rand_game['rom'], args)
+        env.setMode('test')
+    elif rand_game['env'] == 'ple':
+        if rand_game['gameName'] == 'snake':
+            game = ple.games.snake.Snake()
+        elif rand_game['gameName'] == 'catcher':
+            game = ple.games.catcher.Catcher()
+        env = PLEEnvironment(game, args)
 
     payload = {
-        'reward':reward,
-        'isTerminal':env.isTerminal()
+        'inputCount': env.numActions(),
+        'gameName': rand_game['gameName'],
     }
 
-    r = requests.post(address, files=files, data=payload)
+    address = 'http://172.17.0.1:5000/'
+    r = requests.post(address, data=payload)
+    assert r.json()['reply'] == 'ok'
 
-    if env.isTerminal():
-        break
+    reward = 0
+    zero_counter = 0
 
-    j = r.json()
-    action = j['action']
-    reward = env.act(action)
+    while True:
+        cv2.imwrite("capture.jpg", env.getScreen())
+        files = {'screen': open("capture.jpg", 'rb')}
+
+        payload = {
+            'reward':int(reward), # PLE casts the reward to a float, so need to change to int
+            'isTerminal':env.isTerminal()
+        }
+
+        r = requests.post(address, files=files, data=payload)
+
+        j = r.json()
+        action = j['action']
+        reward = env.act(action)
+
+        if reward == 0:
+            zero_counter += 1
+            if zero_counter >= 500:
+                print 'You have been stuck WAY too long. DIE!!'
+                r = requests.post(address, files=files, data=payload)
+                break
+        else:
+            zero_counter = 0
+
+        if env.isTerminal():
+            print 'terminal state reached!'
+            r = requests.post(address, files=files, data=payload)
+            break
 
 
-raw_input()
